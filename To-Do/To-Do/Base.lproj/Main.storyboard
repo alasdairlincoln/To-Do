@@ -41,6 +41,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="To Do" id="Xgt-ek-OMa">
+                        <barButtonItem key="leftBarButtonItem" title="Edit" id="M1M-4I-5uB">
+                            <connections>
+                                <action selector="editMode:" destination="VCO-eQ-RWN" id="25z-TW-P4p"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="9T3-gQ-mUc">
                             <connections>
                                 <action selector="showDialog:" destination="VCO-eQ-RWN" id="dyT-ad-ylj"/>

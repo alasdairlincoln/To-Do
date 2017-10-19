@@ -14,6 +14,11 @@ class ListController: UITableViewController {
     
     @IBAction func showDialog(_ sender: UIBarButtonItem) {
         
+        let title = NSLocalizedString("New Item", comment: "an item is something to add to the list")
+        let message = NSLocalizedString("Type item below", comment: "instructions on how to enter a new item")
+        let addTitle = NSLocalizedString("Add", comment: "label on button to add the new item")
+        let cancelTitle = NSLocalizedString("Cancel", comment: "label on button used to cancel and dismiss the dialog")
+        
         let alert = UIAlertController(title: "New Item", message: "Type item below", preferredStyle: .alert)
         alert.addTextField(configurationHandler: nil)
         
@@ -23,29 +28,52 @@ class ListController: UITableViewController {
                     self.items.append(item)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
+                        self.saveList()
                     }
                 }
             }
-            
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
-    
     }
     
+    @IBAction func editMode(_ sender: UIBarButtonItem) {
+        self.isEditing = !self.isEditing
+        if self.isEditing {
+            sender.title = "Done"
+        } else {
+            sender.title = "Edit"
+        }
+    }
+    
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell:UITableViewCell = self.tableView?.cellForRow(at: indexPath){
+            if cell.accessoryType == .checkmark {
+                cell.accessoryType = .none
+            } else {
+                cell.accessoryType = .checkmark
+            }
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        let savedItems = UserDefaults.standard
+        if let loadedItems:[String] = savedItems.object(forKey: "items") as! [String]?{
+            self.items = loadedItems
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    func saveList() {
+        let savedItems = UserDefaults.standard
+        savedItems.set(items, forKey: "items")
+        savedItems.synchronize()
     }
 
     override func didReceiveMemoryWarning() {
@@ -85,32 +113,27 @@ class ListController: UITableViewController {
     }
     */
 
-    /*
-    // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
+            self.items.remove(at: indexPath.row)
+            self.saveList()
             tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
+    
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+        let item:String = items[fromIndexPath.row]
+        self.items.remove(at: fromIndexPath.row)
+        items.insert(item, at: to.row)
+        self.saveList()
+        self.tableView.reloadData()
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
+ 
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the item to be re-orderable.
         return true
     }
-    */
+    
 
     /*
     // MARK: - Navigation
