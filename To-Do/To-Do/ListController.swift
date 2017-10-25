@@ -14,11 +14,6 @@ class ListController: UITableViewController {
     
     @IBAction func showDialog(_ sender: UIBarButtonItem) {
         
-        let title = NSLocalizedString("New Item", comment: "an item is something to add to the list")
-        let message = NSLocalizedString("Type item below", comment: "instructions on how to enter a new item")
-        let addTitle = NSLocalizedString("Add", comment: "label on button to add the new item")
-        let cancelTitle = NSLocalizedString("Cancel", comment: "label on button used to cancel and dismiss the dialog")
-        
         let alert = UIAlertController(title: "New Item", message: "Type item below", preferredStyle: .alert)
         alert.addTextField(configurationHandler: nil)
         
